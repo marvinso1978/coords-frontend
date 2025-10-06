@@ -5,6 +5,21 @@
     "y": 68,
     "servers": [
       true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "lv": "3",
+    "x": "67",
+    "y": "89",
+    "servers": [
+      false,
       false,
       false,
       false,
