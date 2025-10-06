@@ -16,6 +16,7 @@
 </head>
 <body>
   <h1>Coordinate Manager</h1>
+
   <form id="coordForm">
     LV: <input type="number" id="lv" required>
     X: <input type="number" id="x" required>
@@ -26,9 +27,9 @@
   <table id="coordsTable">
     <thead>
       <tr>
-        <th>LV</th>
-        <th>X</th>
-        <th>Y</th>
+        <th>LV <input type="text" id="filterLv" placeholder="Filter"></th>
+        <th>X <input type="text" id="filterX" placeholder="Filter"></th>
+        <th>Y <input type="text" id="filterY" placeholder="Filter"></th>
         <th colspan="8">Servers</th>
         <th>Delete</th>
       </tr>
@@ -36,6 +37,6 @@
     <tbody></tbody>
   </table>
 
-  <script src="script.js"></script>
+  <script src="script.js" type="module"></script>
 </body>
 </html>
