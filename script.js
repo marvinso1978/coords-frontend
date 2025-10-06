@@ -1,97 +1,114 @@
 // === CONFIG ===
-const apiUrl = "https://raw.githubusercontent.com/marvinso1978/coords-frontend/main/coords.json";        // GET coordinates
-const apiUpdateUrl = "/api/coords-update"; // POST updates
+const apiUrl = "/api/coords";              // Backend API to GET coords
+const apiUpdateUrl = "/api/coords-update"; // Backend API to POST updates
 
 let coords = [];
-const serversList = [1018,1012,1011,1016,1002,1003,1004,1014];
 
 // === LOAD DATA ===
 async function loadData() {
   try {
-    const res = await fetch(apiUrl);
+    const res = await fetch(apiUrl, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
     coords = await res.json();
     renderTable();
   } catch (err) {
     console.error("Error loading coords:", err);
+    alert("⚠️ Failed to load coordinates data. Check console for details.");
+  }
+}
+
+// === SAVE DATA ===
+async function saveData() {
+  try {
+    const res = await fetch(apiUpdateUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(coords),
+    });
+    if (!res.ok) throw new Error(`Update failed: ${res.status}`);
+    console.log("✅ Coordinates updated successfully");
+  } catch (err) {
+    console.error("Error saving data:", err);
+    alert("⚠️ Failed to save data. Check console for details.");
   }
 }
 
 // === RENDER TABLE ===
 function renderTable() {
-  const tbody = document.querySelector("#coordsTable tbody");
-  tbody.innerHTML = "";
+  const tableBody = document.querySelector("#coords-table tbody");
+  tableBody.innerHTML = "";
 
-  // Filters
-  const fLv = document.getElementById("filterLv").value.trim();
-  const fX  = document.getElementById("filterX").value.trim();
-  const fY  = document.getElementById("filterY").value.trim();
+  coords.forEach((item, index) => {
+    const row = document.createElement("tr");
 
-  coords.forEach((c, index) => {
-    if ((fLv && c.lv != fLv) || (fX && c.x != fX) || (fY && c.y != fY)) return;
+    // LV (label)
+    const lvCell = document.createElement("td");
+    lvCell.textContent = item.lv || "";
+    lvCell.contentEditable = true;
+    lvCell.addEventListener("input", (e) => {
+      coords[index].lv = e.target.textContent.trim();
+    });
+    row.appendChild(lvCell);
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${c.lv}</td>
-      <td>${c.x}</td>
-      <td>${c.y}</td>
-      ${c.servers.map((s,i) => `
-        <td class="server-${s}" 
-            style="cursor:pointer;${s ? 'background:#b2fab4' : 'background:#fbcaca'}"
-            onclick="toggleServer(${index},${i})">
-          ${s ? "✔️" : ""}
-        </td>`).join("")}
-      <td><button onclick="deleteCoord(${index})">❌</button></td>
-    `;
-    tbody.appendChild(tr);
+    // X coordinate
+    const xCell = document.createElement("td");
+    xCell.textContent = item.x || "";
+    xCell.contentEditable = true;
+    xCell.addEventListener("input", (e) => {
+      coords[index].x = e.target.textContent.trim();
+    });
+    row.appendChild(xCell);
+
+    // Y coordinate
+    const yCell = document.createElement("td");
+    yCell.textContent = item.y || "";
+    yCell.contentEditable = true;
+    yCell.addEventListener("input", (e) => {
+      coords[index].y = e.target.textContent.trim();
+    });
+    row.appendChild(yCell);
+
+    // Servers (array of 8 toggleable values)
+    for (let i = 0; i < 8; i++) {
+      const serverCell = document.createElement("td");
+      const val = item.servers?.[i] || "";
+      const btn = document.createElement("button");
+      btn.textContent = val ? "🟢" : "⚪️";
+      btn.className = "toggle-btn";
+      btn.addEventListener("click", () => {
+        coords[index].servers[i] = !coords[index].servers[i];
+        btn.textContent = coords[index].servers[i] ? "🟢" : "⚪️";
+        saveData(); // auto-save on toggle
+      });
+      serverCell.appendChild(btn);
+      row.appendChild(serverCell);
+    }
+
+    // Delete button
+    const delCell = document.createElement("td");
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "🗑️";
+    delBtn.className = "delete-btn";
+    delBtn.addEventListener("click", () => {
+      coords.splice(index, 1);
+      saveData();
+      renderTable();
+    });
+    delCell.appendChild(delBtn);
+    row.appendChild(delCell);
+
+    tableBody.appendChild(row);
   });
 }
 
-// === ADD COORDINATE ===
-document.getElementById("coordForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const lv = parseInt(document.getElementById("lv").value);
-  const x  = parseInt(document.getElementById("x").value);
-  const y  = parseInt(document.getElementById("y").value);
-
-  if (coords.some(c => c.lv === lv && c.x === x && c.y === y)) {
-    alert("Duplicate LV + X + Y!");
-    return;
-  }
-
-  coords.push({ lv, x, y, servers: Array(8).fill(false) });
-  await updateGitHub("Add coordinate");
+// === ADD NEW ENTRY ===
+document.querySelector("#add-btn").addEventListener("click", () => {
+  coords.push({ lv: "", x: "", y: "", servers: Array(8).fill(false) });
+  renderTable();
 });
 
-// === TOGGLE SERVER ===
-window.toggleServer = async (index, serverIndex) => {
-  coords[index].servers[serverIndex] = !coords[index].servers[serverIndex];
-  await updateGitHub("Toggle server");
-};
-
-// === DELETE COORDINATE ===
-window.deleteCoord = async (index) => {
-  coords.splice(index,1);
-  await updateGitHub("Delete coordinate");
-};
-
-// === FILTER INPUT EVENTS ===
-["filterLv","filterX","filterY"].forEach(id=>{
-  document.getElementById(id).addEventListener("input", renderTable);
-});
-
-// === UPDATE GITHUB ===
-async function updateGitHub(message) {
-  try {
-    await fetch(apiUpdateUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ coords, message })
-    });
-    renderTable();
-  } catch(err) {
-    console.error("Error updating coords:", err);
-  }
-}
+// === SAVE BUTTON ===
+document.querySelector("#save-btn").addEventListener("click", saveData);
 
 // === INIT ===
-loadData();
+window.addEventListener("load", loadData);
