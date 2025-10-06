@@ -4,73 +4,104 @@
   <meta charset="UTF-8">
   <title>Coords Map</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    :root{
+      /* tweak these widths to fit your labels/content */
+      --col-lv: 60px;
+      --col-x: 90px;
+      --col-y: 90px;
+      --col-server: 72px;
+      --col-action: 80px;
+
+      --header-height: 44px;   /* height of top header row */
+      --addrow-height: 44px;   /* height of add row */
     }
+
+    body{ font-family: Arial, sans-serif; margin: 12px; }
+
+    .table-wrapper {
+      border: 1px solid #ccc;
+      max-height: 620px;        /* visible viewport height for table */
+      overflow: auto;           /* gives a scrollable viewport for both x and y */
+    }
+
     table {
       border-collapse: collapse;
       width: 100%;
-      table-layout: fixed; /* make columns respect width */
+      table-layout: fixed;      /* important: columns use widths from colgroup */
+      min-width: 980px;         /* ensure horizontal scroll if screen narrow */
     }
+
+    colgroup col { /* no styles here; each col has inline style below */ }
+
     th, td {
-      border: 1px solid #ccc;
-      padding: 4px 8px;
+      border: 1px solid #ddd;
+      padding: 6px 8px;
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-    thead th {
-      background: #f0f0f0;
-      position: sticky;
-      top: 0;
-      z-index: 2; /* header above other rows */
-    }
-    /* Freeze first 3 columns */
-    th:first-child, td:first-child,
-    th:nth-child(2), td:nth-child(2),
-    th:nth-child(3), td:nth-child(3) {
-      position: sticky;
-      left: 0;
-      background: #f9f9f9;
-      z-index: 1;
-    }
-    th:nth-child(2), td:nth-child(2) { left: 50px; } /* adjust based on width */
-    th:nth-child(3), td:nth-child(3) { left: 100px; }
-
-    button.toggle-btn {
-      cursor: pointer;
-      width: 30px;
-      height: 30px;
-    }
-    button.delete-btn {
-      cursor: pointer;
-      background-color: red;
-      color: white;
-    }
-    button#add-btn, button#save-btn {
-      margin: 10px 5px;
-      padding: 5px 10px;
-    }
-    input.filter, input[type="text"] {
-      width: 100%;
+      background: white;
       box-sizing: border-box;
     }
-    tbody {
-      max-height: 500px; /* optional scroll height */
-      display: block;
-      overflow: auto;
+
+    thead tr:first-child th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      height: var(--header-height);
+      background: #f4f4f4;
     }
-    tbody tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
+
+    /* add-row (second thead row) sticky just below header row */
+    thead tr#add-row td, thead tr#add-row th {
+      position: sticky;
+      top: var(--header-height);
+      z-index: 4;
+      background: #fbfbfb;
+      height: var(--addrow-height);
     }
-    thead, tbody tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
+
+    /* Freeze first 3 columns: lv (col 1), x (col 2), y (col 3)
+       left offsets must equal cumulative widths of preceding cols */
+    /* column widths from :root:
+       col1 = --col-lv
+       col2 = --col-x
+       col3 = --col-y
+    */
+    /* 1st column */
+    th:nth-child(1), td:nth-child(1) {
+      position: sticky;
+      left: 0;
+      z-index: 6; /* higher than rows so header cells appear above */
+      background: #fff;
     }
+    /* 2nd column: left = width of 1st col */
+    th:nth-child(2), td:nth-child(2) {
+      position: sticky;
+      left: var(--col-lv);
+      z-index: 6;
+      background: #fff;
+    }
+    /* 3rd column: left = width(1st) + width(2nd) */
+    th:nth-child(3), td:nth-child(3) {
+      position: sticky;
+      left: calc(var(--col-lv) + var(--col-x));
+      z-index: 6;
+      background: #fff;
+    }
+
+    /* action column (last) can be right-aligned but not sticky */
+    th.action, td.action { width: var(--col-action); }
+
+    /* small controls */
+    button.toggle-btn { cursor: pointer; width: 34px; height: 34px; }
+    button.delete-btn { cursor: pointer; background: #c0392b; color: #fff; border: none; padding: 6px; }
+    select.filter, input.filter { width: 100%; box-sizing: border-box; }
+
+    /* ensure header & add-row look aligned when a vertical scrollbar appears:
+       scrollbar is inside .table-wrapper; because thead is part of the same table
+       and uses sticky inside that scroller, alignment will be preserved.
+    */
   </style>
 </head>
 <body>
