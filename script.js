@@ -13,6 +13,8 @@ async function loadData() {
     console.error("Error loading coords:", err);
   }
 }
+// === OPTIONAL: PERIODIC REFRESH EVERY 15 SECONDS ===
+setInterval(loadData, 15000);  // 15s interval
 
 // === RENDER TABLE ===
 function renderTable() {
