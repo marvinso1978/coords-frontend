@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     const path = "coords.json";
 
     // Get the raw file from GitHub
-    const url = `https://raw.githubusercontent.com/${owner}/${repo}/main/${path}`;
+    const url = `https://api.github.com/${owner}/${repo}/main/${path}`;
     const response = await fetch(url, { cache: "no-store" });
 
     if (!response.ok) {
