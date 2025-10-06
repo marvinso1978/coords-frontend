@@ -85,6 +85,13 @@ async function saveData() {
 }
 
 // === INLINE ADD ROW ===
+document.querySelectorAll("#add-row .server-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    btn.dataset.value = btn.dataset.value === "true" ? "false" : "true";
+    btn.textContent = btn.dataset.value === "true" ? "🟢" : "⚪️";
+  });
+});
+
 document.querySelector("#add-inline-btn").addEventListener("click", () => {
   const lv = document.querySelector("#new-lv").value.trim();
   const x = document.querySelector("#new-x").value.trim();
@@ -102,17 +109,25 @@ document.querySelector("#add-inline-btn").addEventListener("click", () => {
     return;
   }
 
+  // Read server toggles
+  const serverStates = Array.from(document.querySelectorAll("#add-row .server-toggle"))
+    .map(b => b.dataset.value === "true");
+
   coords.push({
     lv,
     x,
     y,
-    servers: Array(serverIds.length).fill(false),
+    servers: serverStates,
   });
 
   // Clear inputs
   document.querySelector("#new-lv").value = "";
   document.querySelector("#new-x").value = "";
   document.querySelector("#new-y").value = "";
+  document.querySelectorAll("#add-row .server-toggle").forEach(b => {
+    b.dataset.value = "false";
+    b.textContent = "⚪️";
+  });
 
   renderTable();
   saveData();
