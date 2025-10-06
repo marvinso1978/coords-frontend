@@ -5,8 +5,8 @@
     "y": 68,
     "servers": [
       true,
-      true,
       false,
+      true,
       false,
       false,
       false,
