@@ -2,6 +2,7 @@ let coords = [];
 const serverIds = [1018, 1012, 1011, 1016, 1002, 1003, 1004, 1014];
 const apiUrl = "/api/coords";
 const apiUpdateUrl = "/api/coords-update";
+let activeFilters = {};
 
 // === LOAD DATA ===
 async function loadData() {
@@ -13,9 +14,19 @@ async function loadData() {
     console.error("Error loading coords:", err);
   }
 }
+
 // === REFRESH FORCE ===
 document.querySelector("#refresh-btn").addEventListener("click", () => {
-  loadData();  // Calls your existing loadData() function
+  loadData();
+});
+
+// === FILTER INPUTS ===
+document.querySelectorAll(".filter").forEach(input => {
+  input.addEventListener("input", () => {
+    const key = input.dataset.key;
+    activeFilters[key] = input.value.toLowerCase().trim();
+    renderTable();
+  });
 });
 
 // === RENDER TABLE ===
@@ -23,47 +34,59 @@ function renderTable() {
   const tbody = document.querySelector("#coords-table tbody");
   tbody.innerHTML = "";
 
-  coords.forEach((item, index) => {
-    const row = document.createElement("tr");
-
-    // LV, X, Y
-    ["lv", "x", "y"].forEach(key => {
-      const td = document.createElement("td");
-      td.textContent = item[key];
-      row.appendChild(td);
-    });
-
-    // Servers
-    for (let i = 0; i < serverIds.length; i++) {
-      const td = document.createElement("td");
-      const btn = document.createElement("button");
-      btn.className = "toggle-btn";
-      btn.textContent = item.servers[i] ? "🟢" : "⚪️";
-      btn.addEventListener("click", () => {
-        coords[index].servers[i] = !coords[index].servers[i];
-        btn.textContent = coords[index].servers[i] ? "🟢" : "⚪️";
-        saveData(); // frontend updated immediately
+  coords
+    .filter(item => {
+      return Object.entries(activeFilters).every(([key, value]) => {
+        if (!value) return true; // no filter
+        if (key.startsWith("servers-")) {
+          const idx = parseInt(key.split("-")[1]);
+          const state = item.servers[idx] ? "🟢" : "⚪️";
+          return state.includes(value);
+        }
+        return (item[key] + "").toLowerCase().includes(value);
       });
-      td.appendChild(btn);
-      row.appendChild(td);
-    }
+    })
+    .forEach((item, index) => {
+      const row = document.createElement("tr");
 
-    // Delete button
-    const tdAction = document.createElement("td");
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Delete";
-    delBtn.addEventListener("click", () => {
-      if (confirm("Delete this coordinate?")) {
-        coords.splice(index, 1);
-        renderTable();
-        saveData();
+      // LV, X, Y
+      ["lv", "x", "y"].forEach(key => {
+        const td = document.createElement("td");
+        td.textContent = item[key];
+        row.appendChild(td);
+      });
+
+      // Servers
+      for (let i = 0; i < serverIds.length; i++) {
+        const td = document.createElement("td");
+        const btn = document.createElement("button");
+        btn.className = "toggle-btn";
+        btn.textContent = item.servers[i] ? "🟢" : "⚪️";
+        btn.addEventListener("click", () => {
+          coords[index].servers[i] = !coords[index].servers[i];
+          btn.textContent = coords[index].servers[i] ? "🟢" : "⚪️";
+          saveData();
+        });
+        td.appendChild(btn);
+        row.appendChild(td);
       }
-    });
-    tdAction.appendChild(delBtn);
-    row.appendChild(tdAction);
 
-    tbody.appendChild(row);
-  });
+      // Delete button
+      const tdAction = document.createElement("td");
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.addEventListener("click", () => {
+        if (confirm("Delete this coordinate?")) {
+          coords.splice(index, 1);
+          renderTable();
+          saveData();
+        }
+      });
+      tdAction.appendChild(delBtn);
+      row.appendChild(tdAction);
+
+      tbody.appendChild(row);
+    });
 }
 
 // === SAVE DATA ===
@@ -79,8 +102,7 @@ async function saveData() {
       console.error("Failed to save data:", data.error);
       alert("⚠️ Failed to save data. Check console for details.");
     } else {
-      // Wait 1-2 seconds, then reload from backend to sync
-      setTimeout(loadData, 2000);
+      setTimeout(loadData, 2000); // refresh to sync backend changes
     }
   } catch (err) {
     console.error("Error saving data:", err);
@@ -138,7 +160,7 @@ document.querySelector("#add-inline-btn").addEventListener("click", () => {
 });
 
 // === OPTIONAL: PERIODIC REFRESH ===
-setInterval(loadData, 15000); // every 15s, refresh from backend to catch GitHub updates
+setInterval(loadData, 15000);
 
 // === INITIAL LOAD ===
 loadData();
