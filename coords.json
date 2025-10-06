@@ -1588,5 +1588,20 @@
       false,
       true
     ]
+  },
+  {
+    "lv": "3",
+    "x": "527",
+    "y": "808",
+    "servers": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
   }
 ]
