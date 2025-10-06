@@ -43,5 +43,20 @@
       false,
       false
     ]
+  },
+  {
+    "lv": "9",
+    "x": "887",
+    "y": "254",
+    "servers": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
   }
 ]
