@@ -1654,7 +1654,7 @@
     "x": "85",
     "y": "582",
     "servers": [
-      false,
+      true,
       false,
       false,
       true,
