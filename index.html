@@ -2,40 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Coordinate Manager</title>
+  <title>Coords Map</title>
   <style>
-    body { font-family: sans-serif; margin: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    th { background: #f4f4f4; }
-    input { width: 80px; }
-    button { padding: 4px 8px; margin: 2px; cursor: pointer; }
-    .server-true { background: #b2fab4; }
-    .server-false { background: #fbcaca; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px 8px;
+      text-align: center;
+    }
+    button.toggle-btn {
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+    }
+    button.delete-btn {
+      cursor: pointer;
+      background-color: red;
+      color: white;
+    }
+    button#add-btn, button#save-btn {
+      margin: 10px 5px;
+      padding: 5px 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>Coordinate Manager</h1>
+  <h1>Coordinates Map</h1>
 
-  <form id="coordForm">
-    LV: <input type="number" id="lv" required>
-    X: <input type="number" id="x" required>
-    Y: <input type="number" id="y" required>
-    <button type="submit">Add</button>
-  </form>
+  <button id="add-btn">Add Coordinate</button>
+  <button id="save-btn">Save All</button>
 
-<table id="coords-table">
-  <thead>
-    <tr>
-      <th>LV</th><th>X</th><th>Y</th>
-      <th colspan="8">Servers</th><th>Action</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-<button id="add-btn">Add</button>
-<button id="save-btn">Save All</button>
+  <table id="coords-table">
+    <thead>
+      <tr>
+        <th>LV</th>
+        <th>X</th>
+        <th>Y</th>
+        <th>1018</th>
+        <th>1012</th>
+        <th>1011</th>
+        <th>1016</th>
+        <th>1002</th>
+        <th>1003</th>
+        <th>1004</th>
+        <th>1014</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data rows will be inserted here by script.js -->
+    </tbody>
+  </table>
 
-  <script src="script.js" type="module"></script>
+  <script src="script.js"></script>
 </body>
 </html>
