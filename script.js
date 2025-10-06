@@ -7,7 +7,8 @@ const apiUpdateUrl = "/api/coords-update";
 async function loadData() {
   try {
     const res = await fetch(apiUrl, { cache: "no-store" });
-    coords = await res.json();
+    const data = await res.json();
+    coords = data;
     renderTable();
   } catch (err) {
     console.error("Error loading coords:", err);
@@ -35,25 +36,24 @@ function renderTable() {
       const btn = document.createElement("button");
       btn.className = "toggle-btn";
       btn.textContent = item.servers[i] ? "🟢" : "⚪️";
-      btn.addEventListener("click", async () => {
+      btn.addEventListener("click", () => {
         coords[index].servers[i] = !coords[index].servers[i];
         btn.textContent = coords[index].servers[i] ? "🟢" : "⚪️";
-        await saveData(); // refresh table after toggle
+        saveData(); // frontend updated immediately
       });
       td.appendChild(btn);
       row.appendChild(td);
     }
 
-    // Action (Delete)
+    // Delete button
     const tdAction = document.createElement("td");
     const delBtn = document.createElement("button");
-    delBtn.className = "delete-btn";
     delBtn.textContent = "Delete";
-    delBtn.addEventListener("click", async () => {
+    delBtn.addEventListener("click", () => {
       if (confirm("Delete this coordinate?")) {
         coords.splice(index, 1);
         renderTable();
-        await saveData();
+        saveData();
       }
     });
     tdAction.appendChild(delBtn);
@@ -63,7 +63,7 @@ function renderTable() {
   });
 }
 
-// === SAVE DATA TO BACKEND ===
+// === SAVE DATA ===
 async function saveData() {
   try {
     const res = await fetch(apiUpdateUrl, {
@@ -75,18 +75,16 @@ async function saveData() {
     if (!data.success) {
       console.error("Failed to save data:", data.error);
       alert("⚠️ Failed to save data. Check console for details.");
-    } else {
-      // Refresh table to reflect latest saved data
-      await loadData();
     }
+    // Do NOT reload from backend immediately — avoids GitHub caching delay
   } catch (err) {
     console.error("Error saving data:", err);
     alert("⚠️ Failed to save data. Check console for details.");
   }
 }
 
-// === ADD NEW COORDINATE ===
-document.querySelector("#add-inline-btn").addEventListener("click", async () => {
+// === INLINE ADD ROW ===
+document.querySelector("#add-inline-btn").addEventListener("click", () => {
   const lv = document.querySelector("#new-lv").value.trim();
   const x = document.querySelector("#new-x").value.trim();
   const y = document.querySelector("#new-y").value.trim();
@@ -110,17 +108,17 @@ document.querySelector("#add-inline-btn").addEventListener("click", async () => 
     servers: Array(serverIds.length).fill(false),
   });
 
-  // Clear input fields
+  // Clear inputs
   document.querySelector("#new-lv").value = "";
   document.querySelector("#new-x").value = "";
   document.querySelector("#new-y").value = "";
 
   renderTable();
-  await saveData();
+  saveData();
 });
 
-// === SAVE BUTTON (optional) ===
-document.querySelector("#save-btn").addEventListener("click", saveData);
+// === OPTIONAL: PERIODIC REFRESH ===
+setInterval(loadData, 15000); // every 15s, refresh from backend to catch GitHub updates
 
 // === INITIAL LOAD ===
 loadData();
