@@ -13,7 +13,8 @@ export default async function handler(req, res) {
   if (!GITHUB_TOKEN) {
     return res.status(500).json({ error: "Missing GitHub token" });
   }
-
+  console.log("Incoming data:", req.body);
+  console.log("GITHUB_TOKEN exists:", !!process.env.GITHUB_TOKEN);
   try {
     const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
