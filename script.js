@@ -1,23 +1,69 @@
-// === CONFIG ===
-const apiUrl = "/api/coords";              // Backend API to GET coords
-const apiUpdateUrl = "/api/coords-update"; // Backend API to POST updates
-
 let coords = [];
+const serverIds = [1018, 1012, 1011, 1016, 1002, 1003, 1004, 1014];
+const apiUrl = "/api/coords";
+const apiUpdateUrl = "/api/coords-update";
 
 // === LOAD DATA ===
 async function loadData() {
   try {
     const res = await fetch(apiUrl, { cache: "no-store" });
-    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
     coords = await res.json();
     renderTable();
   } catch (err) {
     console.error("Error loading coords:", err);
-    alert("⚠️ Failed to load coordinates data. Check console for details.");
   }
 }
 
-// === SAVE DATA ===
+// === RENDER TABLE ===
+function renderTable() {
+  const tbody = document.querySelector("#coords-table tbody");
+  tbody.innerHTML = "";
+
+  coords.forEach((item, index) => {
+    const row = document.createElement("tr");
+
+    // LV, X, Y
+    ["lv", "x", "y"].forEach(key => {
+      const td = document.createElement("td");
+      td.textContent = item[key];
+      row.appendChild(td);
+    });
+
+    // Servers
+    for (let i = 0; i < serverIds.length; i++) {
+      const td = document.createElement("td");
+      const btn = document.createElement("button");
+      btn.className = "toggle-btn";
+      btn.textContent = item.servers[i] ? "🟢" : "⚪️";
+      btn.addEventListener("click", () => {
+        coords[index].servers[i] = !coords[index].servers[i];
+        btn.textContent = coords[index].servers[i] ? "🟢" : "⚪️";
+        saveData();
+      });
+      td.appendChild(btn);
+      row.appendChild(td);
+    }
+
+    // Action (Delete)
+    const tdAction = document.createElement("td");
+    const delBtn = document.createElement("button");
+    delBtn.className = "delete-btn";
+    delBtn.textContent = "Delete";
+    delBtn.addEventListener("click", () => {
+      if (confirm("Delete this coordinate?")) {
+        coords.splice(index, 1);
+        renderTable();
+        saveData();
+      }
+    });
+    tdAction.appendChild(delBtn);
+    row.appendChild(tdAction);
+
+    tbody.appendChild(row);
+  });
+}
+
+// === SAVE DATA TO BACKEND ===
 async function saveData() {
   try {
     const res = await fetch(apiUpdateUrl, {
@@ -25,83 +71,21 @@ async function saveData() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(coords),
     });
-    if (!res.ok) throw new Error(`Update failed: ${res.status}`);
-    console.log("✅ Coordinates updated successfully");
+    const data = await res.json();
+    if (!data.success) {
+      console.error("Failed to save data:", data.error);
+      alert("⚠️ Failed to save data. Check console for details.");
+    } else {
+      // Refresh table to ensure latest data
+      loadData();
+    }
   } catch (err) {
     console.error("Error saving data:", err);
     alert("⚠️ Failed to save data. Check console for details.");
   }
 }
 
-// === RENDER TABLE ===
-function renderTable() {
-  const tableBody = document.querySelector("#coords-table tbody");
-  tableBody.innerHTML = "";
-
-  coords.forEach((item, index) => {
-    const row = document.createElement("tr");
-
-    // LV (label)
-    const lvCell = document.createElement("td");
-    lvCell.textContent = item.lv || "";
-    lvCell.contentEditable = true;
-    lvCell.addEventListener("input", (e) => {
-      coords[index].lv = e.target.textContent.trim();
-    });
-    row.appendChild(lvCell);
-
-    // X coordinate
-    const xCell = document.createElement("td");
-    xCell.textContent = item.x || "";
-    xCell.contentEditable = true;
-    xCell.addEventListener("input", (e) => {
-      coords[index].x = e.target.textContent.trim();
-    });
-    row.appendChild(xCell);
-
-    // Y coordinate
-    const yCell = document.createElement("td");
-    yCell.textContent = item.y || "";
-    yCell.contentEditable = true;
-    yCell.addEventListener("input", (e) => {
-      coords[index].y = e.target.textContent.trim();
-    });
-    row.appendChild(yCell);
-
-    // Servers (array of 8 toggleable values)
-    for (let i = 0; i < 8; i++) {
-      const serverCell = document.createElement("td");
-      const val = item.servers?.[i] || "";
-      const btn = document.createElement("button");
-      btn.textContent = val ? "🟢" : "⚪️";
-      btn.className = "toggle-btn";
-      btn.addEventListener("click", () => {
-        coords[index].servers[i] = !coords[index].servers[i];
-        btn.textContent = coords[index].servers[i] ? "🟢" : "⚪️";
-        saveData(); // auto-save on toggle
-      });
-      serverCell.appendChild(btn);
-      row.appendChild(serverCell);
-    }
-
-    // Delete button
-    const delCell = document.createElement("td");
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "🗑️";
-    delBtn.className = "delete-btn";
-    delBtn.addEventListener("click", () => {
-      coords.splice(index, 1);
-      saveData();
-      renderTable();
-    });
-    delCell.appendChild(delBtn);
-    row.appendChild(delCell);
-
-    tableBody.appendChild(row);
-  });
-}
-
-// === ADD NEW ENTRY ===
+// === ADD NEW COORDINATE ===
 document.querySelector("#add-btn").addEventListener("click", () => {
   const lv = prompt("Enter LV (required):");
   const x = prompt("Enter X coordinate (required):");
@@ -112,7 +96,7 @@ document.querySelector("#add-btn").addEventListener("click", () => {
     return;
   }
 
-  // Ensure no duplicates of lv+x+y
+  // Check duplicates (LV + X + Y)
   const exists = coords.some(c => c.lv === lv && c.x == x && c.y == y);
   if (exists) {
     alert("Coordinate with same LV, X, Y already exists!");
@@ -123,15 +107,15 @@ document.querySelector("#add-btn").addEventListener("click", () => {
     lv,
     x,
     y,
-    servers: Array(8).fill(false)
+    servers: Array(serverIds.length).fill(false),
   });
 
   renderTable();
-  saveData(); // automatically save after adding
+  saveData();
 });
 
-// === SAVE BUTTON ===
+// === SAVE BUTTON (optional) ===
 document.querySelector("#save-btn").addEventListener("click", saveData);
 
-// === INIT ===
-window.addEventListener("load", loadData);
+// === INITIAL LOAD ===
+loadData();
