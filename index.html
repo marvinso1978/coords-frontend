@@ -7,57 +7,69 @@
     body {
       font-family: Arial, sans-serif;
     }
-
-    .table-container {
-      max-height: 600px; /* adjust table viewport height */
-      overflow-y: auto;
-      border: 1px solid #ccc;
-    }
-
     table {
       border-collapse: collapse;
       width: 100%;
+      table-layout: fixed; /* make columns respect width */
     }
-
     th, td {
       border: 1px solid #ccc;
       padding: 4px 8px;
       text-align: center;
-      background: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-
-    thead tr th {
+    thead th {
+      background: #f0f0f0;
       position: sticky;
       top: 0;
-      z-index: 2; /* keep above body rows */
+      z-index: 2; /* header above other rows */
     }
-
-    #add-row td {
+    /* Freeze first 3 columns */
+    th:first-child, td:first-child,
+    th:nth-child(2), td:nth-child(2),
+    th:nth-child(3), td:nth-child(3) {
       position: sticky;
-      top: 40px; /* height of header row */
+      left: 0;
       background: #f9f9f9;
       z-index: 1;
     }
+    th:nth-child(2), td:nth-child(2) { left: 50px; } /* adjust based on width */
+    th:nth-child(3), td:nth-child(3) { left: 100px; }
 
     button.toggle-btn {
       cursor: pointer;
       width: 30px;
       height: 30px;
     }
-
     button.delete-btn {
       cursor: pointer;
       background-color: red;
       color: white;
     }
-
-    button#refresh-btn, button#add-inline-btn {
+    button#add-btn, button#save-btn {
       margin: 10px 5px;
       padding: 5px 10px;
     }
-
-    select.filter {
-      width: 80px;
+    input.filter, input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    tbody {
+      max-height: 500px; /* optional scroll height */
+      display: block;
+      overflow: auto;
+    }
+    tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    thead, tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
     }
   </style>
 </head>
