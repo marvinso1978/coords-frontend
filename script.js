@@ -6,9 +6,8 @@ const apiUpdateUrl = "/api/coords-update";
 // === LOAD DATA ===
 async function loadData() {
   try {
-    const res = await fetch(apiUrl, { cache: "no-store" });
-    const data = await res.json();
-    coords = data;
+    const res = await fetch(`${apiUrl}?t=${Date.now()}`, { cache: "no-store" });
+    coords = await res.json();
     renderTable();
   } catch (err) {
     console.error("Error loading coords:", err);
@@ -75,8 +74,10 @@ async function saveData() {
     if (!data.success) {
       console.error("Failed to save data:", data.error);
       alert("⚠️ Failed to save data. Check console for details.");
+    } else {
+      // Wait 1-2 seconds, then reload from backend to sync
+      setTimeout(loadData, 2000);
     }
-    // Do NOT reload from backend immediately — avoids GitHub caching delay
   } catch (err) {
     console.error("Error saving data:", err);
     alert("⚠️ Failed to save data. Check console for details.");
