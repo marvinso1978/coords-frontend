@@ -1,5 +1,5 @@
 // === CONFIG ===
-const apiUrl = "/api/coords";        // GET coordinates
+const apiUrl = "https://raw.githubusercontent.com/marvinso1978/coords-frontend/main/coords.json";        // GET coordinates
 const apiUpdateUrl = "/api/coords-update"; // POST updates
 
 let coords = [];
