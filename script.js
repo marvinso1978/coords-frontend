@@ -35,10 +35,10 @@ function renderTable() {
       const btn = document.createElement("button");
       btn.className = "toggle-btn";
       btn.textContent = item.servers[i] ? "🟢" : "⚪️";
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", async () => {
         coords[index].servers[i] = !coords[index].servers[i];
         btn.textContent = coords[index].servers[i] ? "🟢" : "⚪️";
-        saveData();
+        await saveData(); // refresh table after toggle
       });
       td.appendChild(btn);
       row.appendChild(td);
@@ -49,11 +49,11 @@ function renderTable() {
     const delBtn = document.createElement("button");
     delBtn.className = "delete-btn";
     delBtn.textContent = "Delete";
-    delBtn.addEventListener("click", () => {
+    delBtn.addEventListener("click", async () => {
       if (confirm("Delete this coordinate?")) {
         coords.splice(index, 1);
         renderTable();
-        saveData();
+        await saveData();
       }
     });
     tdAction.appendChild(delBtn);
@@ -76,8 +76,8 @@ async function saveData() {
       console.error("Failed to save data:", data.error);
       alert("⚠️ Failed to save data. Check console for details.");
     } else {
-      // Refresh table to ensure latest data
-      loadData();
+      // Refresh table to reflect latest saved data
+      await loadData();
     }
   } catch (err) {
     console.error("Error saving data:", err);
@@ -86,7 +86,7 @@ async function saveData() {
 }
 
 // === ADD NEW COORDINATE ===
-document.querySelector("#add-btn").addEventListener("click", () => {
+document.querySelector("#add-btn").addEventListener("click", async () => {
   const lv = prompt("Enter LV (required):");
   const x = prompt("Enter X coordinate (required):");
   const y = prompt("Enter Y coordinate (required):");
@@ -111,7 +111,7 @@ document.querySelector("#add-btn").addEventListener("click", () => {
   });
 
   renderTable();
-  saveData();
+  await saveData(); // ensure frontend reloads after adding
 });
 
 // === SAVE BUTTON (optional) ===
