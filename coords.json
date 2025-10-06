@@ -7,22 +7,7 @@
       true,
       false,
       false,
-      false,
-      false,
-      false,
-      false,
-      false
-    ]
-  },
-  {
-    "lv": "3",
-    "x": "95",
-    "y": "67",
-    "servers": [
-      false,
-      false,
-      false,
-      false,
+      true,
       false,
       false,
       false,
