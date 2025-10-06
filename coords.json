@@ -100,10 +100,10 @@
 {"lv":4,"x":736,"y":619,"servers":[true,false,false,false,false,false,false,false]},
 {"lv":4,"x":333,"y":296,"servers":[true,false,false,false,false,false,false,false]},
 {"lv":3,"x":348,"y":170,"servers":[true,false,false,false,false,false,false,false]},
-{"lv":2,"x":808,"y":143,"servers":[false,false,false,false,false,false,false,false,true]},
+{"lv":2,"x":808,"y":143,"servers":[false,false,false,false,false,false,false,true]},
 {"lv":2,"x":319,"y":112,"servers":[false,false,false,true,false,false,false,false]},
-{"lv":3,"x":795,"y":410,"servers":[false,false,false,false,false,false,false,false,true]},
-{"lv":3,"x":805,"y":410,"servers":[false,false,false,false,false,false,false,false,true]},
-{"lv":3,"x":518,"y":803,"servers":[false,false,false,false,false,false,false,false,true]},
-{"lv":3,"x":527,"y":808,"servers":[false,false,false,false,false,false,false,false,true]}
+{"lv":3,"x":795,"y":410,"servers":[false,false,false,false,false,false,false,true]},
+{"lv":3,"x":805,"y":410,"servers":[false,false,false,false,false,false,false,true]},
+{"lv":3,"x":518,"y":803,"servers":[false,false,false,false,false,false,false,true]},
+{"lv":3,"x":527,"y":808,"servers":[false,false,false,false,false,false,false,true]}
 ]
