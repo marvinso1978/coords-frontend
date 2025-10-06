@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "lv": 2,
+    "x": 81,
+    "y": 96,
+    "servers": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+]
