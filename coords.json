@@ -28,35 +28,5 @@
       false,
       false
     ]
-  },
-  {
-    "lv": "3",
-    "x": "46",
-    "y": "78",
-    "servers": [
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-    ]
-  },
-  {
-    "lv": "3",
-    "x": "9",
-    "y": "8",
-    "servers": [
-      false,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-    ]
   }
 ]
