@@ -103,8 +103,31 @@ function renderTable() {
 
 // === ADD NEW ENTRY ===
 document.querySelector("#add-btn").addEventListener("click", () => {
-  coords.push({ lv: "", x: "", y: "", servers: Array(8).fill(false) });
+  const lv = prompt("Enter LV (required):");
+  const x = prompt("Enter X coordinate (required):");
+  const y = prompt("Enter Y coordinate (required):");
+
+  if (!lv || !x || !y) {
+    alert("LV, X, Y are required!");
+    return;
+  }
+
+  // Ensure no duplicates of lv+x+y
+  const exists = coords.some(c => c.lv === lv && c.x == x && c.y == y);
+  if (exists) {
+    alert("Coordinate with same LV, X, Y already exists!");
+    return;
+  }
+
+  coords.push({
+    lv,
+    x,
+    y,
+    servers: Array(8).fill(false)
+  });
+
   renderTable();
+  saveData(); // automatically save after adding
 });
 
 // === SAVE BUTTON ===
