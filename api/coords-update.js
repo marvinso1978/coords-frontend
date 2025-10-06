@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   const owner = "marvinso1978";
-  const repo = "coords-map";
+  const repo = "coords-frontend";
   const path = "coords.json";
   const branch = "main";
 
