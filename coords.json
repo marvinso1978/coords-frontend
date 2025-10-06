@@ -20,7 +20,22 @@
     "y": "89",
     "servers": [
       false,
-      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "lv": "3",
+    "x": "96",
+    "y": "87",
+    "servers": [
+      false,
+      false,
       false,
       false,
       false,
