@@ -86,17 +86,17 @@ async function saveData() {
 }
 
 // === ADD NEW COORDINATE ===
-document.querySelector("#add-btn").addEventListener("click", async () => {
-  const lv = prompt("Enter LV (required):");
-  const x = prompt("Enter X coordinate (required):");
-  const y = prompt("Enter Y coordinate (required):");
+document.querySelector("#add-inline-btn").addEventListener("click", async () => {
+  const lv = document.querySelector("#new-lv").value.trim();
+  const x = document.querySelector("#new-x").value.trim();
+  const y = document.querySelector("#new-y").value.trim();
 
   if (!lv || !x || !y) {
     alert("LV, X, Y are required!");
     return;
   }
 
-  // Check duplicates (LV + X + Y)
+  // Check duplicates
   const exists = coords.some(c => c.lv === lv && c.x == x && c.y == y);
   if (exists) {
     alert("Coordinate with same LV, X, Y already exists!");
@@ -110,8 +110,13 @@ document.querySelector("#add-btn").addEventListener("click", async () => {
     servers: Array(serverIds.length).fill(false),
   });
 
+  // Clear input fields
+  document.querySelector("#new-lv").value = "";
+  document.querySelector("#new-x").value = "";
+  document.querySelector("#new-y").value = "";
+
   renderTable();
-  await saveData(); // ensure frontend reloads after adding
+  await saveData();
 });
 
 // === SAVE BUTTON (optional) ===
