@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 export default async function handler(req, res) {
   const token = process.env.GITHUB_TOKEN;
   const response = await fetch(
-    "https://api.github.com/repos/YOUR_USERNAME/coords-map/contents/coords.json",
+    "https://api.github.com/repos/marvinso1978/coords-map/contents/coords.json",
     {
       headers: { Authorization: `token ${token}` },
     }
