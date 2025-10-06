@@ -1,107 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Coords Table</title>
-<style>
-  table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 5px; }
-  th { background: #eee; }
-  .toggle-btn { cursor: pointer; }
-</style>
+  <meta charset="UTF-8">
+  <title>Coords Map</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px 8px;
+      text-align: center;
+    }
+    button.toggle-btn {
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+    }
+    button.delete-btn {
+      cursor: pointer;
+      background-color: red;
+      color: white;
+    }
+    button#add-btn, button#save-btn {
+      margin: 10px 5px;
+      padding: 5px 10px;
+    }
+  </style>
 </head>
 <body>
+  <h1>Coordinates Map</h1>
+  <button id="refresh-btn">Refresh Table</button>
+  <table id="coords-table">
+    <thead>
+      <tr>
+        <th>LV<br><input type="text" class="filter" data-key="lv" placeholder="Filter LV"></th>
+        <th>X<br><input type="text" class="filter" data-key="x" placeholder="Filter X"></th>
+        <th>Y<br><input type="text" class="filter" data-key="y" placeholder="Filter Y"></th>
+        <th>1018<br><input type="text" class="filter" data-key="servers-0" placeholder="Filter"></th>
+        <th>1012<br><input type="text" class="filter" data-key="servers-1" placeholder="Filter"></th>
+        <th>1011<br><input type="text" class="filter" data-key="servers-2" placeholder="Filter"></th>
+        <th>1016<br><input type="text" class="filter" data-key="servers-3" placeholder="Filter"></th>
+        <th>1002<br><input type="text" class="filter" data-key="servers-4" placeholder="Filter"></th>
+        <th>1003<br><input type="text" class="filter" data-key="servers-5" placeholder="Filter"></th>
+        <th>1004<br><input type="text" class="filter" data-key="servers-6" placeholder="Filter"></th>
+        <th>1014<br><input type="text" class="filter" data-key="servers-7" placeholder="Filter"></th>
+        <th>Action</th>
+      </tr>
+      <tr id="add-row">
+        <td><input type="text" id="new-lv" placeholder="LV"></td>
+        <td><input type="text" id="new-x" placeholder="X"></td>
+        <td><input type="text" id="new-y" placeholder="Y"></td>
+        <!-- Server toggles -->
+        <td><button class="server-toggle" data-index="0">⚪️</button></td>
+        <td><button class="server-toggle" data-index="1">⚪️</button></td>
+        <td><button class="server-toggle" data-index="2">⚪️</button></td>
+        <td><button class="server-toggle" data-index="3">⚪️</button></td>
+        <td><button class="server-toggle" data-index="4">⚪️</button></td>
+        <td><button class="server-toggle" data-index="5">⚪️</button></td>
+        <td><button class="server-toggle" data-index="6">⚪️</button></td>
+        <td><button class="server-toggle" data-index="7">⚪️</button></td>
+        <td><button id="add-inline-btn">Add</button></td>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data rows will be inserted here -->
+    </tbody>
+  </table>
 
-<h2>Coordinates Table</h2>
-
-<!-- Force Refresh -->
-<button id="refresh-btn">Refresh Data</button>
-
-<!-- Add Row Inline -->
-<div id="add-row">
-  <input id="new-lv" placeholder="LV">
-  <input id="new-x" placeholder="X">
-  <input id="new-y" placeholder="Y">
-  <!-- Server toggles -->
-  <span>Servers:</span>
-  <button class="server-toggle" data-value="false">⚪️</button>
-  <button class="server-toggle" data-value="false">⚪️</button>
-  <button class="server-toggle" data-value="false">⚪️</button>
-  <button class="server-toggle" data-value="false">⚪️</button>
-  <button class="server-toggle" data-value="false">⚪️</button>
-  <button class="server-toggle" data-value="false">⚪️</button>
-  <button class="server-toggle" data-value="false">⚪️</button>
-  <button class="server-toggle" data-value="false">⚪️</button>
-  <button id="add-inline-btn">Add</button>
-</div>
-
-<table id="coords-table">
-  <thead>
-    <tr>
-      <th>LV<br><input id="filter-lv" placeholder="Filter"></th>
-      <th>X<br><input id="filter-x" placeholder="Filter"></th>
-      <th>Y<br><input id="filter-y" placeholder="Filter"></th>
-      <th>1018<br>
-        <select class="server-filter" data-server-index="0">
-          <option value="">All</option>
-          <option value="true">🟢 Revealed</option>
-          <option value="false">⚪️ Hidden</option>
-        </select>
-      </th>
-      <th>1012<br>
-        <select class="server-filter" data-server-index="1">
-          <option value="">All</option>
-          <option value="true">🟢 Revealed</option>
-          <option value="false">⚪️ Hidden</option>
-        </select>
-      </th>
-      <th>1011<br>
-        <select class="server-filter" data-server-index="2">
-          <option value="">All</option>
-          <option value="true">🟢 Revealed</option>
-          <option value="false">⚪️ Hidden</option>
-        </select>
-      </th>
-      <th>1016<br>
-        <select class="server-filter" data-server-index="3">
-          <option value="">All</option>
-          <option value="true">🟢 Revealed</option>
-          <option value="false">⚪️ Hidden</option>
-        </select>
-      </th>
-      <th>1002<br>
-        <select class="server-filter" data-server-index="4">
-          <option value="">All</option>
-          <option value="true">🟢 Revealed</option>
-          <option value="false">⚪️ Hidden</option>
-        </select>
-      </th>
-      <th>1003<br>
-        <select class="server-filter" data-server-index="5">
-          <option value="">All</option>
-          <option value="true">🟢 Revealed</option>
-          <option value="false">⚪️ Hidden</option>
-        </select>
-      </th>
-      <th>1004<br>
-        <select class="server-filter" data-server-index="6">
-          <option value="">All</option>
-          <option value="true">🟢 Revealed</option>
-          <option value="false">⚪️ Hidden</option>
-        </select>
-      </th>
-      <th>1014<br>
-        <select class="server-filter" data-server-index="7">
-          <option value="">All</option>
-          <option value="true">🟢 Revealed</option>
-          <option value="false">⚪️ Hidden</option>
-        </select>
-      </th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
