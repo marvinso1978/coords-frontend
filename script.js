@@ -27,6 +27,11 @@ document.querySelectorAll(".filter").forEach(input => {
     activeFilters[key] = input.value.toLowerCase().trim();
     renderTable();
   });
+  input.addEventListener("change", () => { // for dropdown selects
+    const key = input.dataset.key;
+    activeFilters[key] = input.value.toLowerCase().trim();
+    renderTable();
+  });
 });
 
 // === RENDER TABLE ===
@@ -38,11 +43,13 @@ function renderTable() {
     .filter(item => {
       return Object.entries(activeFilters).every(([key, value]) => {
         if (!value) return true; // no filter
+
         if (key.startsWith("servers-")) {
           const idx = parseInt(key.split("-")[1]);
-          const state = item.servers[idx] ? "🟢" : "⚪️";
-          return state.includes(value);
+          const state = item.servers[idx] ? "true" : "false";
+          return state === value; // match dropdown "true"/"false"
         }
+
         return (item[key] + "").toLowerCase().includes(value);
       });
     })
@@ -102,7 +109,7 @@ async function saveData() {
       console.error("Failed to save data:", data.error);
       alert("⚠️ Failed to save data. Check console for details.");
     } else {
-      setTimeout(loadData, 2000); // refresh to sync backend changes
+      setTimeout(loadData, 1000); // refresh backend changes
     }
   } catch (err) {
     console.error("Error saving data:", err);
