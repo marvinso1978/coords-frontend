@@ -43,26 +43,27 @@ tbody tr:hover {
   max-height: 85vh;
 }
 
+/* Freeze first 3 columns */
 thead th.sticky-col,
 tbody td.sticky-col {
   position: sticky;
   left: 0;
-  background: white;
-  z-index: 2;
+  background: #fff;
+  z-index: 3;
 }
 
 thead th.sticky-col-2,
 tbody td.sticky-col-2 {
   position: sticky;
-  left: 80px;
-  background: white;
-  z-index: 2;
+  left: 70px; /* adjust based on actual column width */
+  background: #fff;
+  z-index: 3;
 }
 
 thead th.sticky-col-3,
 tbody td.sticky-col-3 {
   position: sticky;
-  left: 160px;
-  background: white;
-  z-index: 2;
+  left: 140px; /* adjust based on total width of col1 + col2 */
+  background: #fff;
+  z-index: 3;
 }
