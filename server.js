@@ -5,7 +5,7 @@ const FILE_PATH = "coords.json";
 const BRANCH = "main";
 const TOKEN = "YOUR_GITHUB_TOKEN"; // We'll handle this securely below
 
-const apiUrl = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
+const apiUrl = "/api/coords";
 let coords = [];
 
 // === LOAD COORDS FROM GITHUB ===
