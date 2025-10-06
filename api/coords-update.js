@@ -6,7 +6,7 @@ export default async function handler(req,res){
 
   // Get current SHA
   const getRes = await fetch(
-    "https://api.github.com/repos/YOUR_USERNAME/coords-map/contents/coords.json",
+    "https://api.github.com/repos/marvinso1978/coords-map/contents/coords.json",
     { headers: { Authorization: `token ${token}` } }
   );
   const getData = await getRes.json();
