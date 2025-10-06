@@ -100,3 +100,29 @@ tbody td.sticky-col-3 {
   background: #f0f0f0;
   color: #000;
 }
+
+/* === Fix filter row inputs and add row === */
+#coords-table thead tr#filterRow th,
+#add-row td {
+  padding: 2px;
+  text-align: center;
+}
+
+#coords-table thead tr#filterRow input,
+#coords-table thead tr#filterRow select,
+#add-row input {
+  width: 100%;
+  box-sizing: border-box; /* prevents input from exceeding column width */
+  text-align: center;
+  padding: 2px 3px;
+  font-size: 0.9em;
+}
+
+#add-row .server-toggle {
+  display: inline-block;
+  margin: 0 auto;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  vertical-align: middle;
+}
