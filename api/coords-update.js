@@ -1,58 +1,47 @@
+import { Octokit } from "octokit";
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
-
-  const { coords, message } = req.body;
-
-  if (!process.env.GITHUB_TOKEN) {
-    return res.status(500).json({ error: "GITHUB_TOKEN not set" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
+  const { GITHUB_TOKEN } = process.env;
   const owner = "marvinso1978";
   const repo = "coords-frontend";
   const path = "coords.json";
-  const branch = "main";
+
+  if (!GITHUB_TOKEN) {
+    return res.status(500).json({ error: "Missing GitHub token" });
+  }
 
   try {
-    // Get current file to obtain SHA
-    const getRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, {
-      headers: {
-        Authorization: `token ${process.env.GITHUB_TOKEN}`,
-        Accept: "application/vnd.github.v3+json"
-      }
+    const octokit = new Octokit({ auth: GITHUB_TOKEN });
+
+    // 1. Get current file to obtain SHA
+    const { data: fileData } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path,
     });
 
-    if (!getRes.ok) {
-      const text = await getRes.text();
-      throw new Error(`Failed to get file: ${text}`);
-    }
+    const sha = fileData.sha;
 
-    const data = await getRes.json();
-    const sha = data.sha;
+    // 2. Update file with new data
+    const newContent = JSON.stringify(req.body, null, 2);
+    const message = `Update coords.json - ${new Date().toISOString()}`;
 
-    // Update the file
-    const updateRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `token ${process.env.GITHUB_TOKEN}`,
-        Accept: "application/vnd.github.v3+json"
-      },
-      body: JSON.stringify({
-        message,
-        content: Buffer.from(JSON.stringify(coords, null, 2)).toString("base64"),
-        sha,
-        branch
-      })
+    await octokit.rest.repos.createOrUpdateFileContents({
+      owner,
+      repo,
+      path,
+      message,
+      content: Buffer.from(newContent).toString("base64"),
+      sha,
     });
 
-    if (!updateRes.ok) {
-      const text = await updateRes.text();
-      throw new Error(`Failed to update file: ${text}`);
-    }
-
-    res.status(200).json({ ok: true });
-
+    res.status(200).json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("Error updating coords.json:", err);
     res.status(500).json({ error: err.message });
   }
 }
