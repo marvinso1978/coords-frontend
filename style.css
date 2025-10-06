@@ -1,27 +1,33 @@
+/* === Base Layout === */
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
+  background: #fafafa;
+  color: #222;
 }
 
+.container {
+  overflow: auto;
+  max-height: 85vh;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+}
+
+/* === Table Styling === */
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
-thead th {
-  position: sticky;
-  top: 0;
-  background: #333;
-  color: white;
-  z-index: 3;
-}
-
-tbody td, thead th {
+thead th,
+tbody td {
   border: 1px solid #ccc;
   padding: 4px;
   text-align: center;
   word-wrap: break-word;
+  font-size: 0.9em;
 }
 
 tbody tr:nth-child(even) {
@@ -32,31 +38,124 @@ tbody tr:hover {
   background-color: #e0e0e0;
 }
 
-#filterRow select, #filterRow input {
-  width: 95%;
-  padding: 3px;
-  font-size: 0.9em;
-}
-
-.container {
-  overflow: auto;
-  max-height: 85vh;
-}
-
-/* Freeze first 3 columns */
-/* For header cells — keep dark background */
-thead th.sticky-col,
-thead th.sticky-col-2,
-thead th.sticky-col-3 {
+/* === Sticky Header === */
+thead th {
+  position: sticky;
+  top: 0;
   background: #333;
   color: white;
-  z-index: 4; /* slightly higher than others to stay on top */
+  z-index: 4;
 }
 
-/* For body cells — keep white background */
-tbody td.sticky-col,
-tbody td.sticky-col-2,
-tbody td.sticky-col-3 {
+/* === Filter Row (inputs + dropdowns) === */
+#filterRow th {
+  background: #555;
+  color: white;
+  top: 35px;
+  position: sticky;
+  z-index: 4;
+}
+
+#filterRow input,
+#filterRow select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  font-size: 0.85em;
+  border: 1px solid #888;
+  border-radius: 3px;
+  background: #fafafa;
+  color: #222;
+}
+
+#filterRow input:focus,
+#filterRow select:focus {
+  outline: none;
+  border-color: #0078d7;
   background: #fff;
+}
+
+/* === Sticky First 3 Columns === */
+thead th.sticky-col,
+tbody td.sticky-col {
+  position: sticky;
+  left: 0;
+  background: #f0f0f0;
+  z-index: 5;
+}
+
+thead th.sticky-col-2,
+tbody td.sticky-col-2 {
+  position: sticky;
+  left: 70px; /* adjust if LV column width changes */
+  background: #f0f0f0;
+  z-index: 5;
+}
+
+thead th.sticky-col-3,
+tbody td.sticky-col-3 {
+  position: sticky;
+  left: 140px; /* adjust based on LV + X column width */
+  background: #f0f0f0;
+  z-index: 5;
+}
+
+/* === Buttons === */
+button {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background: #0078d7;
+  color: white;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+button:hover {
+  background: #005fa3;
+}
+
+.toggle-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  background: none;
+  font-size: 1.2em;
+}
+
+.toggle-btn:hover {
+  background: #ddd;
+}
+
+/* === Refresh Button === */
+#refresh-btn {
+  background: #4caf50;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#refresh-btn:hover {
+  background: #3d8b40;
+}
+
+/* === Add Row Section === */
+#add-row {
+  background: #eef3ff;
+  border-top: 2px solid #ccc;
+  padding: 8px;
+  position: sticky;
+  bottom: 0;
   z-index: 3;
+}
+
+#add-row input {
+  width: 60px;
+  padding: 2px 4px;
+  box-sizing: border-box;
+}
+
+#add-row .server-toggle {
+  margin: 0 2px;
 }
