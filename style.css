@@ -44,26 +44,19 @@ tbody tr:hover {
 }
 
 /* Freeze first 3 columns */
+/* For header cells — keep dark background */
 thead th.sticky-col,
-tbody td.sticky-col {
-  position: sticky;
-  left: 0;
-  background: #fff;
-  z-index: 3;
-}
-
 thead th.sticky-col-2,
-tbody td.sticky-col-2 {
-  position: sticky;
-  left: 70px; /* adjust based on actual column width */
-  background: #fff;
-  z-index: 3;
+thead th.sticky-col-3 {
+  background: #333;
+  color: white;
+  z-index: 4; /* slightly higher than others to stay on top */
 }
 
-thead th.sticky-col-3,
+/* For body cells — keep white background */
+tbody td.sticky-col,
+tbody td.sticky-col-2,
 tbody td.sticky-col-3 {
-  position: sticky;
-  left: 140px; /* adjust based on total width of col1 + col2 */
   background: #fff;
   z-index: 3;
 }
